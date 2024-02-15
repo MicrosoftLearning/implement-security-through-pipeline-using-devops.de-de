@@ -26,7 +26,7 @@ Importieren Sie zunächst die CI-Pipeline mit dem Namen [eshoponweb-ci.ymll](htt
 
 1. Navigieren Sie zum Azure DevOps-Portal unter `https://dev.azure.com` und öffnen Sie Ihre Organisation.
 
-1. Öffnen Sie das eShopOnWeb-Projekt.
+1. Öffnen Sie das Projekt eShopOnWeb.
 
 1. Navigieren Sie zu **Pipelines > Pipelines**.
 
@@ -77,33 +77,37 @@ In dieser Aufgabe legen Sie Parameter- und Parametertypen für die Pipeline fest
 
 1. Ersetzen Sie die hartcodierten Pfade in den Aufgaben `Restore`, `Build` und `Test` durch die soeben erstellten Parameter.
 
-   - **Projekte ersetzen**: `**/*.sln` durch Projekte: ${{ parameters.dotNetProjects }} in den Aufgaben `Restore` und `Build`.
-   - **Projekte ersetzen**: `tests/UnitTests/*.csproj` durch Projekte: ${{ parameters.testProjects }} in der Aufgabe `Test`.
+   - **Projekte ersetzen**: `**/*.sln` mit Projekten: `${{ "{{" }} parameters.dotNetProjects }}` in den Aufgaben `Restore` und `Build`;
+   - **Projekte ersetzen**: `tests/UnitTests/*.csproj` mit Projekten: `${{ "{{" }} parametertestProjects }}` in der Aufgabe `Test`;
 
-   Die Aufgaben `Restore`, `Build` und `Test` im Abschnitt „Schritte“ der YAML-Datei sollten wie folgt aussehen:
+    Die Aufgaben `Restore`, `Build` und `Test` im Abschnitt „Schritte“ der YAML-Datei sollten wie folgt aussehen:
 
-   ```yaml
-       steps:
-       - task: DotNetCoreCLI@2
-         displayName: Restore
-         inputs:
-           command: 'restore'
-           projects: ${{ parameters.dotNetProjects }}
-           feedsToUse: 'select'
-   
-       - task: DotNetCoreCLI@2
-         displayName: Build
-         inputs:
-           command: 'build'
-           projects: ${{ parameters.dotNetProjects }}
-   
-       - task: DotNetCoreCLI@2
-         displayName: Test
-         inputs:
-           command: 'test'
-           projects: ${{ parameters.testProjects }}
+    {% raw %}
 
-   ```
+    ```yaml
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: Restore
+      inputs:
+        command: 'restore'
+        projects: ${{ parameters.dotNetProjects }}
+        feedsToUse: 'select'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: 'build'
+        projects: ${{ parameters.dotNetProjects }}
+    
+    - task: DotNetCoreCLI@2
+      displayName: Test
+      inputs:
+        command: 'test'
+        projects: ${{ parameters.testProjects }}
+    
+    ```
+
+    {% endraw %}
 
 1. Speichern Sie die Pipeline, und führen Sie sie aus. Stellen Sie sicher, dass die Pipelineausführung erfolgreich abgeschlossen wird.
 
@@ -145,11 +149,15 @@ In dieser Aufgabe sichern Sie die Variablen und Parameter aus Ihrer Pipeline mit
 
 1. Ersetzen Sie in der Aufgabe „Erstellen“ den Befehl „Erstellen“ durch die folgenden Zeilen, um die Buildkonfiguration aus der Variablengruppe zu verwenden.
 
-   ```yaml
-           command: 'build'
-           projects: ${{ parameters.dotNetProjects }}
-           configuration: $(buildConfiguration)
-   ```
+    {% raw %}
+
+    ```yaml
+            command: 'build'
+            projects: ${{ parameters.dotNetProjects }}
+            configuration: $(buildConfiguration)
+    ```
+
+    {% endraw %}
 
 1. Speichern Sie die Pipeline, und führen Sie sie aus. Mit folgender Buildkonfiguration sollte sie erfolgreich ausgeführt werden`Release`. Sie können dies überprüfen, indem Sie sich die Protokolle der Aufgabe „Erstellen“ ansehen.
 
@@ -166,42 +174,42 @@ In dieser Aufgabe überprüfen Sie die obligatorischen Variablen, bevor die Pipe
 
 1. Fügen Sie im Abschnitt „Phasen“ am Anfang (nach der Zeile `stage:`) eine neue Phase mit dem Namen **Validate** hinzu, um die obligatorischen Variablen zu überprüfen, bevor die Pipeline ausgeführt wird.
 
-   ```yaml
-   - stage: Validate
-     displayName: Validate mandatory variables
-     jobs:
-     - job: ValidateVariables
-       pool:
-         vmImage: ubuntu-latest
-       steps:
-       - script: |
-           if [ -z "$(buildConfiguration)" ]; then
-             echo "Error: buildConfiguration variable is not set"
-             exit 1
-           fi
-         displayName: 'Validate Variables'
-    ```
+    ```yaml
+    - stage: Validate
+      displayName: Validate mandatory variables
+      jobs:
+      - job: ValidateVariables
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+        - script: |
+            if [ -z "$(buildConfiguration)" ]; then
+              echo "Error: buildConfiguration variable is not set"
+              exit 1
+            fi
+          displayName: 'Validate Variables'
+     ```
 
-   > [!NOTE]
-   > In dieser Phase wird ein Skript ausgeführt, um die buildConfiguration-Variable zu überprüfen. Wenn die Variable nicht festgelegt ist, schlägt das Skript fehl, und die Pipeline wird beendet.
+    > [!NOTE]
+    > In dieser Phase wird ein Skript ausgeführt, um die buildConfiguration-Variable zu überprüfen. Wenn die Variablen nicht festgelegt sind, schlägt das Skript fehl, und die Pipeline wird beendet.
 
 1. Stellen Sie sicher, dass die **Build**-Phase von der **Validate**-Phase abhängig ist, indem Sie `dependsOn: Validate` am Anfang der **Build**-Phase hinzufügen:
 
-   ```yaml
-   - stage: Build
-     displayName: Build .Net Core Solution
-     dependsOn: Validate
-      ```
+    ```yaml
+    - stage: Build
+      displayName: Build .Net Core Solution
+      dependsOn: Validate
+    ```
 
 1. Speichern Sie die Pipeline, und führen Sie sie aus. Sie wird erfolgreich ausgeführt, da die buildConfiguration-Variable in der Variablengruppe festgelegt ist.
 
 1. Um die Überprüfung zu testen, entfernen Sie die buildConfiguration-Variable aus der Variablengruppe, oder löschen Sie die Variablengruppe, und führen Sie die Pipeline erneut aus. Bei folgendem Fehler sollte es fehlschlagen:
 
-   ```yaml
-   Error: buildConfiguration variable is not set   
-   ```
+    ```yaml
+    Error: buildConfiguration variable is not set   
+    ```
 
-   ![Screenshot der Pipelineausführung mit fehlerhafter Überprüfung.](media/pipeline-validation-fail.png)
+    ![Screenshot der Pipelineausführung mit fehlerhafter Überprüfung.](media/pipeline-validation-fail.png)
 
 1. Fügen Sie die Variablengruppe und die buildConfiguration-Variable wieder zur Variablengruppe hinzu, und führen Sie die Pipeline erneut aus. Es sollte erfolgreich ausgeführt werden.
 
