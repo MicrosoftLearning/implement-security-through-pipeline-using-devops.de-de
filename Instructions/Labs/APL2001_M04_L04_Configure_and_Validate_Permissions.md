@@ -15,7 +15,7 @@ Diese Übungen dauern ungefähr **30** Minuten.
 Sie benötigen ein Azure-Abonnement, eine Azure DevOps-Organisation und die eShopOnWeb-Anwendung, um den Labs zu folgen.
 
 - Folgen Sie den Schritten, um Ihre [Lab-Umgebung zu überprüfen](APL2001_M00_Validate_Lab_Environment.md).
-- Installieren Sie einen selbstgehosteten Agent, indem Sie das Lab [Konfigurieren von Agents und Agentpools für sichere Pipelines](/Instructions/Labs/APL2001_M03_L03_Configure_Agents_And_Agent_Pools_for_Secure_Pipelines.md) oder die Schritte in [Installieren eines selbst gehosteten Agents](https://docs.microsoft.com/azure/devops/pipelines/agents/v2-windows?view=azure-devops#install) befolgen.
+- Installieren Sie einen selbstgehosteten Agent, indem Sie das Lab [Konfigurieren von Agents und Agentpools für sichere Pipelines](/Instructions/Labs/APL2001_M02_L02_Configure_Agents_And_Agent_Pools_for_Secure_Pipelines.md) oder die Schritte in [Installieren eines selbst gehosteten Agents](https://docs.microsoft.com/azure/devops/pipelines/agents/v2-windows?view=azure-devops#install) befolgen.
 
 ## Anweisungen
 
@@ -30,7 +30,7 @@ In dieser Übung importieren Sie die CI-Pipeline für die eShopOnWeb-Anwendung u
 
 1. Navigieren Sie zum Azure DevOps-Portal unter `https://dev.azure.com` und öffnen Sie Ihre Organisation.
 
-1. Öffnen Sie das **eShopOnWeb**-Projekt.
+1. Öffnen Sie das Projekt **eShopOnWeb**.
 
 1. Navigieren Sie zu **Pipelines > Pipelines**.
 
@@ -60,7 +60,7 @@ In dieser Übung importieren Sie die CI-Pipeline für die eShopOnWeb-Anwendung u
 
 1. Öffnen Sie das Azure-Portal unter `https://portal.azure.com` in Ihrem Browser.
 
-1. Navigieren Sie im Azure-Portal zu der Seite, auf der der virtuelle Azure-Computer **eshoponweb-vm** angezeigt wird, den Sie in diesem Lab bereitgestellt haben
+1. Navigieren Sie im Azure-Portal zu der Seite, auf der der virtuelle Azure-Computer **eshoponweb-vm** angezeigt wird, den Sie in diesem Lab bereitgestellt haben.
 
 1. Wählen Sie auf der Seite des virtuellen Azure-Computers **eshoponweb-vm** auf der Symbolleiste die Option **Starten** aus, um ihn zu starten.
 
@@ -249,19 +249,19 @@ In dieser Übung entfernen Sie Azure- und Azure DevOps-Ressourcen, die in diesem
 
 1. Navigieren Sie zum Azure DevOps-Portal unter `https://dev.azure.com` und öffnen Sie Ihre Organisation.
 
-1. Öffnen Sie das **eShopOnWeb**-Projekt.
+1. Öffnen Sie das Projekt **eShopOnWeb**.
 
 1. Navigieren Sie zu **Pipelines > Pipelines**.
 
 1. Wechseln Sie zu **Pipelines > Pipelines**, und löschen Sie die vorhandenen Pipelines.
 
-#### Aufgabe 3: Azure DevOps-Repository neu erstellen
+#### Aufgabe 3: Neuerstellen des Azure DevOps-Repositorys
 
-1. Wählen Sie im Azure DevOps-Portal im **eShopOnWeb-**-Projekt in der unteren linken Ecke die Option **Projekteinstellungen** aus.
+1. Wählen Sie im Azure DevOps-Portal im Projekt **eShopOnWeb-** in der unteren linken Ecke die Option **Projekteinstellungen** aus.
 
-1. Wählen Sie im vertikalen Menü **Projekteinstellungen** auf der linken Seite im Abschnitt **Repositorys** die Option **Repositorys** aus.
+1. Wählen Sie im vertikalen Menü **Projekteinstellungen** auf der linken Seite im Abschnitt **Repos** die Option **Repositorys** aus.
 
-1. Zeigen Sie im Bereich **Alle Repositorys** mit der Maus auf das rechte Ende des **eShopOnWeb**-Repositoryeintrags, bis das Symbol mit den Auslassungszeichen **Weitere Optionen** angezeigt wird, wählen Sie es aus, und wählen Sie im Menü **Weitere Option** die Option **Umbenennen** aus.  
+1. Zeigen Sie im Bereich **Alle Repositorys** mit der Maus auf das rechte Ende des Repositoryeintrags **eShopOnWeb**, bis das Symbol mit den Auslassungszeichen **Weitere Optionen** angezeigt wird, wählen Sie es aus, und wählen Sie im Menü **Weitere Option** die Option **Umbenennen** aus.  
 
 1. Geben Sie im Fenster **eShopOnWeb-Repository umbenennen** im Textfeld **Repositoryname** den Text **eShopOnWeb_old** ein, und wählen Sie **Umbenennen** aus.
 
