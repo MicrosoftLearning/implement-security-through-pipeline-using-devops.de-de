@@ -77,8 +77,8 @@ In dieser Aufgabe legen Sie Parameter- und Parametertypen für die Pipeline fest
 
 1. Ersetzen Sie die hartcodierten Pfade in den Aufgaben `Restore`, `Build` und `Test` durch die soeben erstellten Parameter.
 
-   - **Projekte ersetzen**: `**/*.sln` mit Projekten: `${{ "{{" }} parameters.dotNetProjects }}` in den Aufgaben `Restore` und `Build`;
-   - **Projekte ersetzen**: `tests/UnitTests/*.csproj` mit Projekten: `${{ "{{" }} parametertestProjects }}` in der Aufgabe `Test`;
+   - **Projekte ersetzen**: `**/*.sln` mit Projekten: `${{ parameters.dotNetProjects }}` in den Aufgaben `Restore` und `Build`;
+   - **Projekte ersetzen**: `tests/UnitTests/*.csproj` mit Projekten: `${{ parameters.testProjects }}` in der Aufgabe `Test`;
 
     Die Aufgaben `Restore`, `Build` und `Test` im Abschnitt „Schritte“ der YAML-Datei sollten wie folgt aussehen:
 
