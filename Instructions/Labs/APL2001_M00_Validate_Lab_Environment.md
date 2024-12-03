@@ -20,6 +20,8 @@ Bei der Vorbereitung auf die Labs ist es wichtig, dass Ihre Umgebung richtig ein
 
 - [Azure-Befehlszeilenschnittstelle](https://learn.microsoft.com/cli/azure/install-azure-cli). Installieren Sie die Azure CLI auf den selbst gehosteten Agent-Computern.
 
+- [.NET SDK – Neueste Version](https://dotnet.microsoft.com/download/visual-studio-sdks). Installieren Sie das .NET SDK auf den selbst gehosteten Agent-Computern.
+
 ## Anweisungen zum Erstellen einer Azure DevOps-Organisation (Sie müssen dies nur einmal tun)
 
 > **Hinweis**: Beginnen Sie mit Schritt 3, wenn Sie bereits über ein **persönliches Microsoft-Konto** und ein aktives Azure-Abonnement verfügen, das mit diesem Konto verknüpft ist.
@@ -52,7 +54,19 @@ Bei der Vorbereitung auf die Labs ist es wichtig, dass Ihre Umgebung richtig ein
 
 1. Sobald der Bildschirm die verknüpfte Azure-Abonnement-ID oben anzeigt, ändern Sie die Anzahl der **Kostenpflichtigen Parallelaufträge** für **MS Hosted CI/CD** von 0 auf **1**. Klicken Sie anschließend unten auf die Schaltfläche **SPEICHERN**.
 
-1. Sie können **mindestens 3 Stunden warten, bevor Sie die CI/CD-Funktionen** verwenden, damit die neuen Einstellungen im Back-End wiedergegeben werden. Andernfalls wird weiterhin die Meldung *Es wurde keine gehostete Parallelität gekauft oder gewährt* angezeigt.
+   > **Hinweis**: Sie können **einige Minuten warten, bevor Sie die CI/CD-Funktionen** verwenden, damit die neuen Einstellungen im Backend übernommen werden. Andernfalls wird weiterhin die Meldung *„Es wurde keine gehostete Parallelität erworben oder gewährt“* angezeigt.
+
+1. Gehen Sie in **Organisationseinstellungen** zum Abschnitt **Pipelines** und klicken Sie auf **Einstellungen**.
+
+1. Schalten Sie den Schalter auf **Aus** für **Erstellung von klassischen Build-Pipelines deaktivieren** und **Erstellung von klassischen Release-Pipelines deaktivieren**.
+
+   > **Hinweis**: Der Schalter **Erstellung klassischer Release-Pipelines deaktivieren** setzt die Optionen für die Erstellung klassischer Release-Pipelines, wie das Menü **Release** im Abschnitt **Pipeline** von DevOps-Projekten, auf **Ein**.
+
+1. Gehen Sie in **Organisationseinstellungen** zum Abschnitt **Sicherheit** und klicken Sie auf **Richtlinien**.
+
+1. Schalten Sie den Schalter für **Öffentliche Projekte zulassen** auf **Ein**
+
+   > **Hinweis:** In einigen Labs verwendete Erweiterungen erfordern möglicherweise ein öffentliches Projekt, um die kostenlose Version nutzen zu können.
 
 ## Anweisungen zum Erstellen und Konfigurieren des Azure DevOps-Projekts (Sie müssen dies nur einmal tun)
 
@@ -95,49 +109,22 @@ Jetzt importieren Sie das eShopOnWeb in Ihr Git-Repository.
    - Der Ordner **.ado** enthält Azure DevOps-YAML-Pipelines.
    - Der Ordner **.devcontainer** enthält ein Containersetup für die Entwicklung mithilfe von Containern (entweder lokal in VS Code oder über GitHub Codespaces).
    - Der Ordner **.azure** enthält eine Bicep- und ARM-Infrastruktur als Codevorlagen.
-   - **.github**-Ordnercontainer-YAML-GitHub-Workflowdefinitionen.
-   - Der Ordner **src** enthält die .NET 6-Website, die in den Labszenarien verwendet wird. 
+   - Der Ordner **.github** enthält YAML GitHub-Workflow-Definitionen.
+   - Der Ordner **src** enthält die .NET 8-Website, die in den Labszenarios verwendet wird.
 
 1. Lassen Sie das Webbrowserfenster geöffnet.  
 
-### Dienstprinzipal- und Dienstverbindung für den Zugriff auf Azure-Ressourcen erstellen
+1. Gehen Sie zu **Repos > Filialen**.
 
-Als Nächstes erstellen Sie einen Dienstprinzipal mithilfe der Azure CLI und eine Dienstverbindung in Azure DevOps, mit der Sie Ressourcen in Ihrem Azure-Abonnement bereitstellen und darauf zugreifen können.
+1. Bewegen Sie den Mauszeiger auf den **Main**-Branch und klicken Sie dann rechts neben der Spalte auf die Auslassungspunkte.
 
-1. Starten Sie einen Webbrowser, navigieren Sie zum Azure-Portal unter `https://portal.azure.com`, und melden Sie sich mit Ihrem Benutzerkonto an, das in dem Azure-Abonnement, das Sie in den Labs dieses Kurses verwenden, über die Rolle „Besitzer*in“ und in dem Microsoft Entra-Mandanten, der diesem Abonnement zugeordnet ist, über die Rolle „Globale*r Administrator*in“ verfügt.
+1. Klicken Sie auf **Als Mainbranch festlegen**.
 
-1. Wählen Sie im Azure-Portal das **Cloud Shell**-Symbol aus, das sich direkt rechts neben dem Suchtextfeld oben auf der Seite befindet.
+### Erstellen Sie eine Dienstverbindung, um auf Azure-Ressourcen zuzugreifen
 
-1. Wählen Sie bei Aufforderung zur Auswahl von **Bash** oder **PowerShell** die Option **Bash** aus.
+Als Nächstes erstellen Sie eine Dienstverbindung in Azure DevOps, die es Ihnen ermöglicht, Ressourcen in Ihrem Azure-Abonnement bereitzustellen und auf diese zuzugreifen.
 
-   > [!NOTE]
-   > Wenn Sie **Cloud Shell** zum ersten Mal starten und die Meldung **Für Sie wurde kein Speicher bereitgestellt.** angezeigt wird, wählen Sie das in diesem Lab verwendete Abonnement und anschließend **Speicher erstellen** aus.
-
-1. Führen Sie an der Eingabeaufforderung **Bash** im Bereich **Cloud Shell** die folgenden Befehle aus, um die Werte der Attribute „Azure-Abonnement-ID“ und „Abonnementname“ abzurufen:
-
-   ```bash
-   subscriptionName=$(az account show --query name --output tsv)
-   subscriptionId=$(az account show --query id --output tsv)
-   echo $subscriptionName
-   echo $subscriptionId
-   ```
-
-   > [!NOTE]
-   > Kopieren Sie beide Werte in eine Textdatei. Sie werden sie in den Labs dieses Kurses benötigen.
-
-1. Führen Sie in der **Bash**-Eingabeaufforderung im **Cloud Shell**-Bereich den folgenden Befehl aus, um einen Dienstprinzipal zu erstellen:
-
-   ```bash
-   az ad sp create-for-rbac --name sp-eshoponweb-azdo --role contributor --scopes /subscriptions/$subscriptionId
-   ```
-
-   > [!NOTE]
-   > Dieser Befehl erstellt eine JSON-Datei. Kopieren Sie die Ausgabe in eine Textdatei. Sie benötigen ihn später.
-
-   > [!NOTE]
-   > Notieren Sie den „Wert von“, den „Namen des Sicherheitsprinzipals“, seine „ID“ und die „Mandanten-ID“, die in der JSON-Ausgabe enthalten ist. Sie werden sie in den Labs dieses Kurses benötigen.
-
-1. Wechseln Sie zurück zum Webbrowserfenster, in dem das Azure DevOps-Portal mit dem **eShopOnWeb**-Projekt geöffnet ist, und wählen Sie **Projekteinstellungen** in der unteren linken Ecke des Portals aus.
+1. Wechseln Sie zurück zum Webbrowserfenster, in dem das Azure DevOps-Portal mit dem **eShopOnWeb**-Projekt geöffnet ist, und wählen Sie **Projecteinstellungen** in der linken unteren Ecke des Portals aus.
 
 1. Wählen Sie zunächst unter Pipelines die Option **Dienstverbindungen** und dann die Schaltfläche **Dienstverbindung erstellen** aus.
 
@@ -145,19 +132,19 @@ Als Nächstes erstellen Sie einen Dienstprinzipal mithilfe der Azure CLI und ei
 
 1. Wählen Sie im Bildschirm **Neue Dienstverbindung** die Option **Azure Resource Manager** und anschließend **Weiter** aus (Sie müssen möglicherweise scrollen).
 
-1. Wählen Sie dann zunächst **Dienstprinzipal (manuell)** und anschließend **Weiter** aus.
+1. Wählen Sie **Arbeitslast-Identitätsverbund (automatisch)** und **Weiter**.
 
-1. Füllen Sie die leeren Felder mit den Informationen aus, die während der vorherigen Schritte gesammelt wurden:
+   > **Hinweis**: Sie können auch **Workload Identity Federation (manuell)** verwenden, wenn Sie die Serviceverbindung lieber manuell konfigurieren möchten. Folgen Sie den Schritten in der [Azure DevOps-Dokumentation](https://learn.microsoft.com/azure/devops/pipelines/library/connect-to-azure), um die Dienstverbindung manuell zu erstellen.
 
-   - Abonnement-ID und -Name.
-   - Dienstprinzipal-ID (oder clientId/AppId), Dienstprinzipalschlüssel (oder Kennwort) und TenantId.
-   - Geben Sie in **Name der Dienstverbindung** **azure subs** ein. Auf diesen Namen wird in YAML-Pipelines verwiesen, um auf die Dienstverbindung zu verweisen, damit Sie auf Ihr Azure-Abonnement zugreifen können.
+1. Füllen Sie die leeren Felder mit den folgenden Informationen aus:
+    - **Abonnement**: Wählen Sie Ihr Azure-Abonnement.
+    - **Ressourcengruppe**: Wählen Sie die Ressourcengruppe aus, in der Sie Ressourcen bereitstellen möchten.
+    - **Name der Dienstverbindung**: Typ **`azure subs`**. Dieser Name wird in YAML-Pipelines verwendet, um auf Ihr Azure-Abonnement zuzugreifen.
 
-   ![Screenshot der Konfiguration der Azure-Dienstverbindung.](media/azure-service-connection.png)
+1. Stellen Sie sicher, dass die Option **Zugriffsberechtigung für alle Pipelines** erteilen deaktiviert ist, und wählen Sie **Speichern** aus.
 
-1. Aktiviren Sie nicht das Kontrollkästchen **Allen Pipelines die Zugriffsberechtigung gewähren**. Wählen Sie **Überprüfen und Speichern**.
+   > **Hinweis:** Die Option **Zugriffsberechtigung für alle Pipelines erteilen** wird für Produktionsumgebungen nicht empfohlen. Sie wird nur in diesem Lab verwendet, um die Konfiguration der Pipeline zu vereinfachen.
 
-   > [!NOTE]
-   > Die Option **Allen Pipelines die Zugriffsberechtigung gewähren** wird für Produktionsumgebungen nicht empfohlen. Sie wird nur in diesem Lab verwendet, um die Konfiguration der Pipeline zu vereinfachen.
+   > **Hinweis**: Wenn Sie eine Fehlermeldung erhalten, die besagt, dass Sie nicht über die erforderlichen Berechtigungen zum Erstellen einer Dienstverbindung verfügen, versuchen Sie es erneut oder konfigurieren Sie die Dienstverbindung manuell.
 
 Sie haben nun die erforderlichen erforderlichen Schritte abgeschlossen, um mit den Labs fortzufahren.

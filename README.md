@@ -1,6 +1,6 @@
-# Implementieren von Sicherheit über eine Pipeline mithilfe von Azure DevOps
+# Implementierung von Sicherheit durch eine Pipeline mit Azure DevOps
 
-Dieses Repository enthält die Anweisungen und Ressourcen, die zum Abschließen der Übungen im Lernpfad [Entwickeln von KI-Lösungen mit Azure OpenAI](https://learn.microsoft.com/training/paths/implement-security-through-pipeline-using-devops/) in Microsoft Learn erforderlich sind.
+Dieses Repository enthält die Anweisungen und Assets, die für die Übungen im Lernpfad [Implementieren von Sicherheit durch eine Pipeline mit DevOps](https://learn.microsoft.com/training/paths/implement-security-through-pipeline-using-devops/) auf Microsoft Learn erforderlich sind.
 
 ## Melden von Problemen
 

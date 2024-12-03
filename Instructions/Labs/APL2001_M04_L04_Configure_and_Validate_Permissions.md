@@ -8,33 +8,32 @@ lab:
 
 In diesem Lab richten Sie eine sichere Umgebung ein, die dem Prinzip der geringsten Rechte entspricht, um sicherzustellen, dass die Mitglieder nur auf die Ressourcen zugreifen können, die sie für die Ausführung ihrer Aufgaben benötigen, und um potenzielle Sicherheitsrisiken zu minimieren. Dies umfasst das Konfigurieren und Überprüfen von Benutzer- und Pipelineberechtigungen sowie das Einrichten von Genehmigungen und Branchüberprüfungen in Azure DevOps.
 
-Diese Übungen dauern ungefähr **30** Minuten.
+Diese Übung dauert ca. **20** Minuten.
 
 ## Vorbereitung
 
 Sie benötigen ein Azure-Abonnement, eine Azure DevOps-Organisation und die eShopOnWeb-Anwendung, um den Labs zu folgen.
 
 - Folgen Sie den Schritten, um Ihre [Lab-Umgebung zu überprüfen](APL2001_M00_Validate_Lab_Environment.md).
-- Installieren Sie einen selbstgehosteten Agent, indem Sie das Lab [Konfigurieren von Agents und Agentpools für sichere Pipelines](/Instructions/Labs/APL2001_M02_L02_Configure_Agents_And_Agent_Pools_for_Secure_Pipelines.md) oder die Schritte in [Installieren eines selbst gehosteten Agents](https://docs.microsoft.com/azure/devops/pipelines/agents/v2-windows?view=azure-devops#install) befolgen.
+- Installieren Sie einen selbstgehosteten Agent, indem Sie das Lab [Konfigurieren von Agents und Agentpools für sichere Pipelines](APL2001_M02_L02_Configure_Agents_And_Agent_Pools_for_Secure_Pipelines.md) oder die Schritte in [Installieren eines selbst gehosteten Agents](https://learn.microsoft.com/azure/devops/pipelines/agents/windows-agent) befolgen.
 
 ## Anweisungen
 
-### Übung 1: CI-Pipeline importieren und pipelinespezifische Berechtigungen konfigurieren
+### Übung 0: (Überspringen, wenn bereits erledigt) Importieren und Ausführen von CI/CD-Pipelines
 
-In dieser Übung importieren Sie die CI-Pipeline für die eShopOnWeb-Anwendung und führen diese aus und konfigurieren pipelinespezifische Berechtigungen.
+In dieser Übung werden Sie die CI/CD-Pipelines in das Azure-DevOps-Projekt importieren und ausführen.
 
-#### Aufgabe 1:  CI-Pipeline importieren und ausführen
+#### Aufgabe 1: (überspringen, wenn erledigt) Importieren und Ausführen der CI-Pipeline
 
-> [!NOTE]
-> Importieren Sie zunächst die CI-Pipeline mit dem Namen [eshoponweb-ci.ymll](https://github.com/MicrosoftLearning/eShopOnWeb/blob/main/.ado/eshoponweb-ci.yml).
+Beginnen wir mit dem Importieren der CI-Pipeline mit dem Namen [eshoponweb-ci.yml](https://github.com/MicrosoftLearning/eShopOnWeb/blob/main/.ado/eshoponweb-ci.yml).
 
-1. Navigieren Sie zum Azure DevOps-Portal unter `https://dev.azure.com` und öffnen Sie Ihre Organisation.
+1. Navigieren Sie zum Azure DevOps-Portal unter `https://aex.dev.azure.com` und öffnen Sie Ihre Organisation.
 
-1. Öffnen Sie das Projekt **eShopOnWeb**.
+1. Öffnen Sie das Projekt **eShopOnWeb** in Azure DevOps.
 
 1. Navigieren Sie zu **Pipelines > Pipelines**.
 
-1. Wählen Sie **Neue Pipeline** aus.
+1. Wählen Sie die Schaltfläche **Pipeline erstellen** aus.
 
 1. Wählen Sie **Azure Repos Git (Yaml)**.
 
@@ -42,70 +41,25 @@ In dieser Übung importieren Sie die CI-Pipeline für die eShopOnWeb-Anwendung u
 
 1. Wählen Sie die Option **Vorhandene Azure Pipelines-YAML-Datei** aus.
 
-1. Wählen Sie die Datei **/.ado/eshoponweb-ci.yml** und dann **Weiter** aus.
+1. Wählen Sie die Datei **/.ado/eshoponweb-ci.yml** aus und klicken Sie dann auf **Weiter**.
 
 1. Klicken Sie auf die Schaltfläche **Ausführen**, um die Pipeline auszuführen.
 
-   > [!NOTE]
-   > Ihre Pipeline nimmt einen Namen auf der Grundlage des Projektnamens an. Benennen Sie sie um, um die Pipeline besser zu identifizieren.
+   > **Hinweis**: Ihre Pipeline bekommt einen Namen basierend auf dem Projektnamen. Sie benennen die Pipeline um, damit leichter zu identifizieren ist.
 
-1. Wechseln Sie zu **Pipelines > Pipelines**, wählen Sie zunächst die zuletzt erstellte Pipeline, dann die Auslassungspunkte und anschließend die Option **Umbenennen/Verschieben** aus.
+1. Wechseln Sie zu **Pipelines > Pipelines** und wählen Sie die zuletzt erstellte Pipeline aus. Wählen Sie die Auslassungspunkte und dann die Option **Umbenennen/verschieben** aus.
 
-1. Nennen Sie sie **eshoponweb-ci**, und wählen Sie **Speichern** aus.
+1. Geben Sie ihr den Namen **eshoponweb-ci**, und wählen Sie **Speichern** aus.
 
-#### Aufgabe 2: Pipeline mit bestimmten Berechtigungen konfigurieren und ausführen
+#### Aufgabe 2: (überspringen, wenn erledigt) Importieren und Ausführen der CD-Pipeline
 
-> [!NOTE]
-> Um den in dieser Aufgabe konfigurierten Agentpool zu verwenden, müssen Sie zuerst den virtuellen Azure-Computer starten, auf dem der Agent gehostet wird. 
+> **Hinweis**: In dieser Aufgabe werden Sie die CD-Pipeline [eshoponweb-cd-webapp-code.yml](https://github.com/MicrosoftLearning/eShopOnWeb/blob/main/.ado/eshoponweb-cd-webapp-code.yml) importieren und ausführen.
 
-1. Öffnen Sie das Azure-Portal unter `https://portal.azure.com` in Ihrem Browser.
+1. Navigieren Sie zu **Pipelines > Pipelines**.
 
-1. Navigieren Sie im Azure-Portal zu der Seite, auf der der virtuelle Azure-Computer **eshoponweb-vm** angezeigt wird, den Sie in diesem Lab bereitgestellt haben.
+1. Wählen Sie die Schaltfläche **Neue Pipeline** aus.
 
-1. Wählen Sie auf der Seite des virtuellen Azure-Computers **eshoponweb-vm** auf der Symbolleiste die Option **Starten** aus, um ihn zu starten.
-
-   > [!NOTE]
-   > Als Nächstes konfigurieren Sie die CI-Pipeline für die Ausführung mit dem entsprechenden Agentpool und überprüfen die Berechtigungen zum Ausführen der Pipeline. Sie müssen über Berechtigungen zum Bearbeiten der Pipeline verfügen und dem Agentpool Berechtigungen hinzufügen.
-
-1. Wechseln Sie zu den Projekteinstellungen, und wählen Sie unter **Pipelines** die Option **Agentpools** aus.
-
-1. Öffnen Sie den **eShopOnWebSelfPool**-Agentpool.
-
-1. Wählen Sie die Registerkarte **Security** (Sicherheit) aus.
-
-1. Wählen Sie zunächst im Abschnitt **Pipelineberechtigungen** die Schaltfläche **+** und dann die **eshoponweb-ci**-Pipeline aus, um sie der Liste der Pipelines mit Zugriff auf den Agentpool hinzuzufügen.
-
-1. Navigieren Sie zur **eShopOnWeb**-Projektseite.
-
-1. Navigieren Sie auf der **eShopOnWeb**-Projektseite zu **Pipelines > Pipelines**.
-
-1. Wählen Sie zunächst die **eshoponweb-ci**-Pipeline und dann **Bearbeiten** aus.
-
-1. Aktualisieren Sie im Unterabschnitt **Aufträge** des Abschnitts **Phasen** den Wert der **Pool**-Eigenschaft, um auf den selbstgehosteten Agentpool **eShopOnWebSelfPool** zu verweisen, den Sie in dieser Aufgabe konfiguriert haben, sodass er das folgende Format aufweist:
-
-   ```yaml
-     jobs:
-     - job: Build
-       pool: eShopOnWebSelfPool
-       steps:
-       - task: DotNetCoreCLI@2
-   ```
-
-1. Wählen Sie zunächst **Speichern** und dann den direkten Commit zum Mainbranch aus.
-
-1. Wählen Sie erneut **Speichern** aus.
-
-1. Wählen Sie die Option zum **Ausführen** der Pipeline aus, und klicken Sie dann erneut auf die Option **Ausführen**.
-
-1. Stellen Sie sicher, dass der Buildauftrag auf dem **eShopOnWebSelfAgent**-Agent ausgeführt und erfolgreich abgeschlossen wird.
-
-#### Aufgabe 3: CD-Pipeline konfigurieren und Berechtigungen überprüfen
-
-1. Wechseln Sie im Azure DevOps-Portal auf der **eShopOnWeb**-Projektseite zu **Pipelines > Pipelines**.
-
-1. Wählen Sie **Neue Pipeline** aus.
-
-1. Wählen Sie **Azure Repos Git (Yaml)**.
+1. Wählen Sie **Azure Repos Git** (YAML) aus.
 
 1. Wählen Sie das Repository **eShopOnWeb** aus.
 
@@ -113,34 +67,48 @@ In dieser Übung importieren Sie die CI-Pipeline für die eShopOnWeb-Anwendung u
 
 1. Wählen Sie zunächst die Datei **/.ado/eshoponweb-cd-webapp-code.yml** und dann **Weiter** aus.
 
-1. Passen Sie in der YAML-Pipelinedefinition im Abschnitt „Variablen“ Folgendes an:
-
-   - **AZ400-EWebShop-NAME** mit dem Namen Ihrer Einstellung, z. B. **rg-eshoponweb-perm**.
-   - **Standort** mit dem Namen der Azure-Region, in der Sie Ihre Ressourcen bereitstellen möchten, z. B. **southcentralus**.
-   - Ersetzen Sie **IHRE-ABONNEMENT-ID** durch Ihre Azure-Abonnement-ID.
-   - **azure subs** mit **azure subs managed**
-   - **az400-webapp-NAME** mit einem global eindeutigen Namen der Web-App, die bereitgestellt werden soll, z. B. die Zeichenfolge **eshoponweb-lab-perm-** gefolgt von einer zufälligen sechsstelligen Zahl. 
-
-1. Aktualisieren Sie die YAML-Datei, um den **eShopOnWebSelfPool**-Agentpool zu verwenden. Legen Sie dazu den Abschnitt **Pool** auf den folgenden Wert fest:
+1. Legen Sie in der YAML-Pipelinedefinition im Abschnitt „Variablen“ Folgendes fest:
 
    ```yaml
-     jobs:
-     - job: Deploy
-       pool: eShopOnWebSelfPool
-       steps:
-       #download artifacts
-       - download: eshoponweb-ci
+   variables:
+     resource-group: 'YOUR-RESOURCE-GROUP-NAME'
+     location: 'centralus'
+     templateFile: 'infra/webapp.bicep'
+     subscriptionid: 'YOUR-SUBSCRIPTION-ID'
+     azureserviceconnection: 'YOUR-AZURE-SERVICE-CONNECTION-NAME'
+     webappname: 'YOUR-WEB-APP-NAME'
    ```
 
-1. Wählen Sie die Option **Speichern und Ausführen** und dann erneut **Speichern und Ausführen** aus.
+1. Ersetzen Sie die Werte der Variablen jeweils durch die Werte für Ihre Umgebung:
 
-1. Öffnen Sie die Pipeline, und beachten Sie die Meldung „Diese Pipeline benötigt die Berechtigung für den Zugriff auf 2 Ressourcen, bevor diese Ausführung weiterhin für WebApp bereitstellen kann“. Wählen Sie zunächst **Ansicht** und dann **Zulassen** aus, damit die Pipeline ausgeführt werden kann.
+   - Ersetzen Sie **YOUR-RESOURCE-GROUP-NAME** durch den Namen der Ressourcengruppe, die Sie in diesem Lab verwenden möchten, wie **rg-eshoponweb-secure**.
+   - Legen Sie den Namen der Variablen **Standort** auf den Namen der Azure-Region fest, in der Sie Ihre Ressourcen bereitstellen möchten, wie **centralus**.
+   - Ersetzen Sie **YOUR-SUBSCRIPTION-ID** durch Ihre Azure-Abonnement-ID.
+   - Ersetzen Sie **YOUR-AZURE-SERVICE-CONNECTION-NAME** mit **azure subs**.
+   - Ersetzen Sie **YOUR-WEB-APP-NAME** durch einen global eindeutigen Namen der Web-App, die bereitgestellt werden soll, z.B. die Zeichenfolge **eshoponweb-lab-multi-123456** gefolgt von einer zufälligen sechsstelligen Zahl.
 
-   ![Screenshot der Pipeline mit den ‚Zulassen‘-Schaltflächen“.](media/pipeline-permission-permit.png)
+1. Wählen Sie zunächst **Speichern und ausführen** und dann den direkten Commit zu Mainbranch aus.
 
-1. Benennen Sie die Pipeline in **eshoponweb-cd-webapp-code** um.
+1. Wählen Sie erneut **Speichern und ausführen** aus.
 
-### Übung 2: Konfigurieren und Überprüfen von Genehmigungs- und Branchüberprüfungen
+1. Öffnen Sie die Pipelineausführung. Wenn Sie Ihnen die Meldung „This pipeline needs permission to access a resource before this run can continue to Deploy to WebApp“ angezeigt wird, wählen Sie erneut **View**, **Permit** und **Permit** aus. Diese Berechtigung ist erforderlich, damit die Pipeline die Azure App Service-Ressource erstellen kann.
+
+   ![Screenshot der Genehmigung des Zugriffs über die YAML-Pipeline](media/pipeline-deploy-permit-resource.png)
+
+1. Die Bereitstellung kann einige Minuten dauern. Warten Sie, bis die Pipeline ausgeführt wird. Die Pipeline wird nach Abschluss der CI-Pipeline ausgelöst und umfasst die folgenden Aufgaben:
+
+   - **AzureResourceManagerTemplateDeployment**: Stellt die Azure App Service-Web-App mithilfe der Bicep-Vorlage bereit.
+   - **AzureRmWebAppDeployment**: Veröffentlicht die Website in der Azure App Service-Web-App.
+
+   > **Hinweis**: Falls die Bereitstellung fehlschlägt, navigieren Sie zur Seite „Pipelineausführung“ und wählen Sie **Fehlerhafte Aufträge erneut ausführen** aus, um eine weitere Pipelineausführung aufzurufen.
+
+   > **Hinweis**: Ihre Pipeline bekommt einen Namen basierend auf dem Projektnamen. Wir **benennen sie um**, damit wir die Pipeline besser identifizieren können.
+
+1. Wechseln Sie zu **Pipelines > Pipelines** und wählen Sie die zuletzt erstellte Pipeline aus. Wählen Sie die Auslassungspunkte und dann die Option **Umbenennen/verschieben** aus.
+
+1. Nennen Sie es **eshoponweb-cd-webapp-code** und klicken Sie auf **Speichern**.
+
+### Übung 1: Konfigurieren und Überprüfen von Genehmigungs- und Branchüberprüfungen
 
 In dieser Übung konfigurieren und überprüfen Sie die Genehmigungen und Branchüberprüfungen für die CD-Pipeline.
 
@@ -152,19 +120,19 @@ In dieser Übung konfigurieren und überprüfen Sie die Genehmigungen und Branch
 
 1. Benennen Sie die Umgebung **Test**, wählen Sie zunächst **Keine** als Ressource und dann **Erstellen** aus.
 
-1. Wählen Sie **Neue Umgebung** aus, erstellen Sie eine neue Umgebung mit dem Namen **Production**, stellen Sie sicher, dass **Keine** als Ressource ausgewählt ist, und klicken Sie auf **Erstellen**.
-
 1. Öffnen Sie die **Test**-Umgebung, wählen Sie die Registerkarte **Genehmigungen und Überprüfungen** aus.
 
 1. Wählen Sie **Genehmigungen** aus.
 
 1. Geben Sie im Textfeld **Genehmigende Person** Ihren Benutzernamen ein.
 
+1. Falls nicht aktiviert, markieren Sie das Kästchen „Genehmigenden erlauben, ihre eigenen Läufe zu genehmigen“.
+
 1. Geben Sie die Anweisungen **Genehmigen der Bereitstellung für Test**, und wählen Sie **Erstellen** aus.
 
    ![Screenshot der Umgebungsgenehmigungen mit Anweisungen.](media/add-environment-approvals.png)
 
-1. Wählen Sie zunächst die Schaltfläche **+**, dann **Steuerung von Branches** und anschließend **Weiter** aus.
+1. Klicken Sie auf die Schaltfläche **+ Neu hinzufügen**, wählen Sie **Branchenüberprüfung**, und wählen Sie dann **Weiter**.
 
 1. Behalten Sie im Feld **Zulässige Branches** die Standardeinstellung bei, und wählen Sie **Erstellen** aus. Sie können bei Bedarf weitere Branches hinzufügen.
 
@@ -172,8 +140,7 @@ In dieser Übung konfigurieren und überprüfen Sie die Genehmigungen und Branch
 
 1. Erstellen Sie eine weitere Umgebung mit dem Namen **Production**, und führen Sie die gleichen Schritte aus, um Genehmigungen und die Steuerung von Branches hinzuzufügen. Um die Umgebungen zu unterscheiden, fügen Sie die Anweisungen **Genehmigen der Bereitstellung für Production** hinzu und legen Sie die zulässigen Branches auf **refs/heads/main** fest.
 
-> [!NOTE]
-> Sie können weitere Umgebungen hinzufügen und Genehmigungen und Steuerungen von Branches für sie konfigurieren. Darüber hinaus können Sie **Sicherheit** so konfigurieren, dass Benutzer*innen oder Gruppen zur Umgebung mit Rollen wie *Benutzer*in*, *Ersteller*in* oder *Leser*in* hinzugefügt werden.
+> **Anmerkung**: Sie können weitere Umgebungen hinzufügen und Genehmigungen und Branchenüberprüfungen für sie konfigurieren. Darüber hinaus können Sie **Sicherheit** so konfigurieren, dass Benutzer*innen oder Gruppen zur Umgebung mit Rollen wie *Benutzer*in*, *Ersteller*in* oder *Leser*in* hinzugefügt werden.
 
 #### Aufgabe 2: CD-Pipeline für die Verwendung der neuen Umgebung konfigurieren
 
@@ -183,7 +150,7 @@ In dieser Übung konfigurieren und überprüfen Sie die Genehmigungen und Branch
 
 1. Wählen Sie **Bearbeiten** aus.
 
-1. Ersetzen Sie die Zeilen 21–27 (direkt über dem Kommentar **#download artifacts**) durch den folgenden Inhalt:
+1. Wählen Sie die Zeile oberhalb des Kommentars **#download artifacts** bis zur Zeile **stages:** in der Pipeline-YAML-Datei aus und ersetzen Sie den Inhalt durch den folgenden Code:
 
    ```yaml
    stages:
@@ -211,14 +178,20 @@ In dieser Übung konfigurieren und überprüfen Sie die Genehmigungen und Branch
              - checkout: self
    ```
 
-   > [!NOTE]
-   > Sie müssen alle Zeilen nach dem obigen Code sechs Leerzeichen nach rechts verschieben, um sicherzustellen, dass die YAML-Einzugsregeln erfüllt sind.
+   > **Hinweis**: Sie müssen alle Zeilen, die dem obigen Code folgen, um sechs Leerzeichen nach rechts verschieben, damit die YAML-Einrückungsregeln eingehalten werden.
 
    Ihre Pipeline sollte wie folgt aussehen:
 
    ![Screenshot der Pipeline mit der neuen Bereitstellung.](media/pipeline-add-yaml-deployment.png)
 
-1. Wählen Sie **Speichern** (zweimal) und **Ausführen** (zweimal) aus.
+   > [!IMPORTANT]
+   > Vergewissern Sie sich, dass der Name des **Pools** derselbe ist wie der, den Sie in der vorherigen Übung erstellt haben.
+
+1. Klicken Sie auf "**Überprüfen und speichern**", wählen Sie den Commit direkt im Mainbranch aus, und klicken Sie dann auf **Speichern**.
+
+1. Ihre Pipeline wird automatisch ausgelöst. Öffnen Sie die Pipelineausführung.
+
+   > **Hinweis**: Wenn Sie die Meldung „Diese Pipeline benötigt eine Berechtigung für den Zugriff auf eine Ressource, bevor dieser Lauf mit dem Testen der WebApp fortgesetzt werden kann“ erhalten, wählen Sie erneut **Ansicht**, **Berechtigung** und **Berechtigung**.
 
 1. Öffnen Sie die Phase **Testen von WebApp** der Pipeline, und beachten Sie die Meldung **1 Genehmigung muss von Ihnen überprüft werden, bevor diese Ausführung mit dem Testen von WebApp fortfahren kann**. Wählen Sie zunächst **Überprüfen** und dann **Genehmigen** aus.
 
@@ -230,54 +203,16 @@ In dieser Übung konfigurieren und überprüfen Sie die Genehmigungen und Branch
 
 1. Zurück zur Pipeline, und Sie sehen, dass die Phase **Bereitstellen für WebApp** auf die Genehmigung wartet. Wählen Sie **Überprüfen** und **Genehmigen** aus, wie Sie es zuvor für die Phase **Testen von WebApp** getan haben.
 
+   > **Hinweis**: Wenn Sie die Meldung „Diese Pipeline benötigt eine Berechtigung für den Zugriff auf eine Ressource, bevor diese Ausführung mit der Bereitstellung in der WebApp fortfahren kann“ erhalten, wählen Sie **Ansicht**, **Zulassen** und noch einmal **Zulassen** aus.
+
 1. Warten Sie, bis die Ausführung der Pipeline abgeschlossen ist, und überprüfen Sie, ob die Phase **Bereitstellen für WebApp** erfolgreich ausgeführt wurde.
 
    ![Screenshot der Pipeline mit der zu genehmigenden ‚Bereitstellen für WebApp‘-Phase“.](media/pipeline-deploy-environment-success.png)
 
-> [!NOTE]
-> Sie sollten in der Lage sein, die Pipeline erfolgreich mit den Genehmigungen und Branchüberprüfungen in beiden Umgebungen – Test und Produktion – auszuführen.
+> **Hinweis**: Sie sollten in der Lage sein, die Pipeline mit den Genehmigungen und Verzweigungsprüfungen in beiden Umgebungen, Test und Produktion, erfolgreich auszuführen.
 
-### Übung 3: Bereinigung von Azure- und Azure DevOps-Ressourcen durchführen
-
-In dieser Übung entfernen Sie Azure- und Azure DevOps-Ressourcen, die in diesem Lab erstellt wurden.
-
-#### Aufgabe 1: Entfernen Sie Azure-Ressourcen,
-
-1. Navigieren Sie im Azure-Portal zur Ressourcengruppe **rg-eshoponweb-perm** mit bereitgestellten Ressourcen, und wählen Sie **Ressourcengruppe löschen** aus, um alle in diesem Lab erstellten Ressourcen zu löschen.
-
-#### Aufgabe 2: Azure DevOps-Pipelines entfernen
-
-1. Navigieren Sie zum Azure DevOps-Portal unter `https://dev.azure.com` und öffnen Sie Ihre Organisation.
-
-1. Öffnen Sie das Projekt **eShopOnWeb**.
-
-1. Navigieren Sie zu **Pipelines > Pipelines**.
-
-1. Wechseln Sie zu **Pipelines > Pipelines**, und löschen Sie die vorhandenen Pipelines.
-
-#### Aufgabe 3: Neuerstellen des Azure DevOps-Repositorys
-
-1. Wählen Sie im Azure DevOps-Portal im Projekt **eShopOnWeb-** in der unteren linken Ecke die Option **Projekteinstellungen** aus.
-
-1. Wählen Sie im vertikalen Menü **Projekteinstellungen** auf der linken Seite im Abschnitt **Repos** die Option **Repositorys** aus.
-
-1. Zeigen Sie im Bereich **Alle Repositorys** mit der Maus auf das rechte Ende des Repositoryeintrags **eShopOnWeb**, bis das Symbol mit den Auslassungszeichen **Weitere Optionen** angezeigt wird, wählen Sie es aus, und wählen Sie im Menü **Weitere Option** die Option **Umbenennen** aus.  
-
-1. Geben Sie im Fenster **eShopOnWeb-Repository umbenennen** im Textfeld **Repositoryname** den Text **eShopOnWeb_old** ein, und wählen Sie **Umbenennen** aus.
-
-1. Wählen Sie im Bereich **Alle Repositorys** die Option **+ Erstellen** aus.
-
-1. Geben Sie im Bereich **Repository erstellen** im Textfeld **Repositoryname** den Text **eShopOnWeb** ein, deaktivieren Sie das Kontrollkästchen **README hinzufügen**, und wählen Sie **Erstellen** aus.
-
-1. Zeigen Sie im Bereich **Alle Repositorys** mit der Maus auf des rechte Ende des **eShopOnWeb_old**-Repositoryeintrags, bis das Symbol mit den Auslassungszeichen **Weitere Optionen** angezeigt wird, wählen Sie es aus, und wählen Sie im Menü **Weitere Option** die Option **Umbenennen** aus.  
-
-1. Geben Sie im Fenster **eShopOnWeb_old-Repository löschen** den Text **eShopOnWeb_old** ein, und wählen Sie **Löschen** aus.
-
-1. Wählen Sie im linken Navigationsmenü des Azure DevOps-Portals die Option **Repositorys** aus.
-
-1. Wählen Sie im Bereich **eShopOnWeb ist leer. Code hinzufügen!** die Option **Repository importieren** aus.
-
-1. Fügen Sie im Fenster **Git-Repository importieren** die folgende URL `https://github.com/MicrosoftLearning/eShopOnWeb` ein, und wählen Sie **Importieren** aus:
+> [!IMPORTANT]
+> Denken Sie daran, die im Azure-Portal erstellten Ressourcen zu löschen, um unnötige Gebühren zu vermeiden.
 
 ## Überprüfung
 
