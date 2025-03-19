@@ -190,7 +190,7 @@ In dieser Aufgabe erstellen Sie eine YAML-Vorlage zum Speichern der Variablen, d
 
    > **Wichtig**: Ersetzen Sie die Werte der Variablen durch die Werte Ihrer Umgebung (Ressourcengruppe, Standort, Abonnement-ID, Azure-Dienstverbindung und Web-App-Name).
 
-1. Wählen Sie **Commit** aus, geben Sie im Textfeld „Commitkommentar“ `[skip ci]` ein, und wählen Sie dann **Commit** aus.
+1. Wählen Sie **Abschließen** aus, geben Sie in das Textfeld für den Abschließenden Kommentar `[skip ci]` ein, und wählen Sie dann **Abschließen** aus.
 
    > **Hinweis**: Indem Sie den Kommentar `[skip ci]` zur Übergabe hinzufügen, verhindern Sie die automatische Ausführung der Pipeline, die zu diesem Zeitpunkt standardmäßig nach jeder Änderung an der Repository ausgeführt wird.
 
