@@ -103,7 +103,7 @@ In dieser Übung erstellen Sie eine mehrstufige YAML-Pipeline in Azure DevOps.
    - Ersetzen Sie **YOUR-AZURE-SERVICE-CONNECTION-NAME** mit **azure subs**.
    - Ersetzen Sie **YOUR-WEB-APP-NAME** durch einen global eindeutigen Namen der Web-App, die bereitgestellt werden soll, z.B. die Zeichenfolge **eshoponweb-lab-multi-123456** gefolgt von einer zufälligen sechsstelligen Zahl.  
 
-1. Wählen Sie **Commit** aus, geben Sie im Textfeld „Commitkommentar“ `[skip ci]` ein, und wählen Sie dann **Commit** aus.
+1. Wählen Sie **Abschließen** aus, geben Sie in das Textfeld für den Abschließenden Kommentar `[skip ci]` ein, und wählen Sie dann **Abschließen** aus.
 
    > **Hinweis**: Indem Sie den Kommentar `[skip ci]` zur Übergabe hinzufügen, verhindern Sie die automatische Ausführung der Pipeline, die zu diesem Zeitpunkt standardmäßig nach jeder Änderung an der Repository ausgeführt wird. 
 
