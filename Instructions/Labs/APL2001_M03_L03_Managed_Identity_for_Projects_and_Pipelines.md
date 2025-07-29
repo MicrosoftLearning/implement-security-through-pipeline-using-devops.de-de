@@ -155,7 +155,7 @@ In dieser Übung verwenden Sie eine verwaltete Identität, um eine neue Dienstve
 
 1. Wählen Sie die Schaltfläche **Neue Dienstverbindung** und dann **Azure Resource Manager** aus.
 
-1. Wählen Sie**Verwaltete Identität** für die **Authentifizierungsmethode** aus.
+1. Wählen Sie **Verwaltete Identität (Agent-seitig zugewiesen)** für die **Authentifizierungsmethode** aus.
 
 1. Stellen Sie die Bereichsebene auf **Abonnement** ein und geben Sie die Informationen aus dem Azure-Portal an, einschließlich der **Abonnement-ID**, des **Abonnementnamens** und der **Mandanten-ID**.
 
